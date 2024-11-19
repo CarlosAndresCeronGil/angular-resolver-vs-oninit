@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { DestroyRef, inject, Injectable, signal } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { delay, from, map, mergeMap, Observable, of, switchMap } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { delay, from, map, mergeMap, Observable, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,18 +18,13 @@ export class RickAndMortyService {
     return this.http.get<Character>(`${this.API_URL}/${id}`);
   }
 
-  getEpisodesByCharacterId(id: number): Observable<Episode | undefined> {
-    return this.http.get<Character>(`${this.API_URL}/${id}`).pipe(
-      switchMap((character) => {
-        if (!character) {
-          return of(undefined);
-        }
-        return from(character.episode).pipe(
-          mergeMap((episodeUrl) => {
-            const randomDelay = this.randomNumber(4000);
-            return this.http.get<Episode>(episodeUrl).pipe(delay(randomDelay));
-          })
-        );
+  getEpisodesByCharacterId(
+    character: Character
+  ): Observable<Episode | undefined> {
+    return from(character.episode).pipe(
+      mergeMap((episodeUrl) => {
+        const randomDelay = this.randomNumber(4000);
+        return this.http.get<Episode>(episodeUrl).pipe(delay(randomDelay));
       })
     );
   }
@@ -47,17 +41,14 @@ interface Info {
   next: string | null;
   prev: string | null;
 }
-
 interface Origin {
   name: string;
   url: string;
 }
-
 interface Location {
   name: string;
   url: string;
 }
-
 export interface Character {
   id: number;
   name: string;
@@ -72,12 +63,10 @@ export interface Character {
   url: string;
   created: string;
 }
-
 export interface RickAndMortyResponse {
   info: Info;
   results: Character[];
 }
-
 export interface Episode {
   id: number;
   name: string;
@@ -87,7 +76,7 @@ export interface Episode {
   url: string;
   created: string;
 }
-
-export interface CharacterWithEpisodes extends Character {
-  episodes: Episode;
+export interface CharacterWithEpisodes {
+  character: Character | undefined;
+  episodes: (Episode | undefined)[];
 }

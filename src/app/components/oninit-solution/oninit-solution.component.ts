@@ -24,12 +24,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   standalone: true,
   imports: [MatCardModule, EpisodeInfoComponent, MatProgressSpinnerModule],
   template: `
-    @if (loading()) {
+    <!-- @if (loading()) {
     <div class="spinner">
       <mat-spinner />
     </div>
-    } @else {
+    } @else { -->
     <div class="character-card-container">
+      @if (character()) {
       <mat-card class="character-card">
         <mat-card-header>
           <mat-card-title> {{ character()!.name }} </mat-card-title>
@@ -44,6 +45,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
           <p><strong>Gender: </strong> {{ character()!.gender }}</p>
         </mat-card-content>
       </mat-card>
+      }
     </div>
 
     <p>Episodes where {{ character()?.name }} appears:</p>
@@ -53,7 +55,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
       <app-episode-info [episodeInfo]="item"></app-episode-info>
       }
     </div>
-    }
+    <!-- } -->
   `,
   styleUrl: './oninit-solution.component.scss',
 })
@@ -63,8 +65,10 @@ export class OninitSolutionComponent implements OnInit {
   listOfEpisodes = signal<Episode[]>([]);
   loading = signal<boolean>(true);
 
-  constructor(private rickAndMortyService: RickAndMortyService) {}
-  destroyRef = inject(DestroyRef);
+  constructor(
+    private rickAndMortyService: RickAndMortyService,
+    private destroyRef: DestroyRef
+  ) {}
 
   ngOnInit(): void {
     this.loading.set(true);
@@ -75,9 +79,7 @@ export class OninitSolutionComponent implements OnInit {
           this.character.set(character);
         }),
         switchMap((character) => {
-          return this.rickAndMortyService.getEpisodesByCharacterId(
-            character.id
-          );
+          return this.rickAndMortyService.getEpisodesByCharacterId(character);
         }),
         takeUntilDestroyed(this.destroyRef)
       )

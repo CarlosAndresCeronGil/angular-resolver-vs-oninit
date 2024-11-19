@@ -24,7 +24,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
       <h1>List of characters</h1>
     </div>
 
-    @if(!(characters$ | async)) {
+    @if(!(characters$)) {
     <div class="spinner">
       <mat-spinner></mat-spinner>
     </div>
