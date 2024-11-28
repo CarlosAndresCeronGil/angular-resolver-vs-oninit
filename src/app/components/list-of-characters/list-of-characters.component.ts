@@ -1,14 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { Component, Signal, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import {
   Character,
   RickAndMortyService,
 } from '../../services/rick-and-morty.service';
-import { Observable } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-list-of-characters',
@@ -17,20 +17,19 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatCardModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    AsyncPipe,
   ],
   template: `
     <div class="title">
       <h1>List of characters</h1>
     </div>
 
-    @if(!(characters$)) {
+    @if(!(characters())) {
     <div class="spinner">
       <mat-spinner></mat-spinner>
     </div>
     } @else {
     <div class="card-list">
-      @for (character of characters$ | async; track $index) {
+      @for (character of characters(); track $index) {
       <mat-card class="character-card">
         <mat-card-header>
           <mat-card-title> {{ character.name }} </mat-card-title>
@@ -57,13 +56,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './list-of-characters.component.scss',
 })
 export class ListOfCharactersComponent {
-  characters$: Observable<Character[]>;
+  characters: Signal<Character[]>;
 
   constructor(
     private rickAndMortyService: RickAndMortyService,
     private router: Router
   ) {
-    this.characters$ = this.rickAndMortyService.characters$;
+    this.characters = toSignal(this.rickAndMortyService.characters$, { initialValue: [] });
   }
 
   handleViewDetails(id: number) {
