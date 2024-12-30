@@ -1,4 +1,4 @@
-import { Component, Signal, signal } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import {
@@ -8,7 +8,6 @@ import {
 import { Router } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-list-of-characters',

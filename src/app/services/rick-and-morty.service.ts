@@ -80,3 +80,7 @@ export interface CharacterWithEpisodes {
   character: Character | undefined;
   episodes: (Episode | undefined)[];
 }
+
+export interface ResolverResponse {
+  characterWithEpisodes: CharacterWithEpisodes;
+}

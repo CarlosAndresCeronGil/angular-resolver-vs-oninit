@@ -22,23 +22,23 @@ import {
   standalone: true,
   imports: [MatCardModule, EpisodeInfoComponent, MatProgressSpinnerModule],
   animations: [
-    trigger('fadeInOut', [
+    trigger('contentFadeIn', [
       state('void', style({ opacity: 0 })),
       transition('void => *', animate('1.3s ease-in')),
     ]),
     // Docs for this part can be found here: https://angular.dev/guide/animations/transition-and-triggers#animate-entering-and-leaving-a-view
-    trigger('loaderFadeOut', [
+    trigger('loaderFadeInOut', [
       transition(':enter', [style({ opacity: .5 }), animate('1s ease-in', style({ opacity: 1 }))]),
       transition(':leave', animate('.3s ease-out', style({ opacity: 0 }))),
     ]),
   ],
   template: `
     @if (loading()) {
-    <div class="spinner" [@loaderFadeOut]="loading() ? 'loading' : 'loaded'">
+    <div class="spinner" [@loaderFadeInOut]="loading() ? 'loading' : 'loaded'">
       <mat-spinner />
     </div>
     } @else {
-    <div class="character-card-container" @fadeInOut>
+    <div class="character-card-container" @contentFadeIn>
       <mat-card class="character-card">
         <mat-card-header>
           <mat-card-title> {{ character()!.name }} </mat-card-title>

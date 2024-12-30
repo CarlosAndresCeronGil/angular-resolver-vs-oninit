@@ -1,4 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.characters-routing {
+  view-transition-name: characters;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    transform: translateX(300px);
+  }
+}
+
+@keyframes slide-to-left {
+  to {
+    transform: translateX(-300px);
+  }
+}
+
+::view-transition-old(characters) {
+  animation: 300ms both fade-out,
+    700ms slide-to-left;
+}
+
+::view-transition-new(characters) {
+  animation: 500ms both fade-in,
+    500ms slide-from-right;
+}
